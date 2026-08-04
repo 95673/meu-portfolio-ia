@@ -12,25 +12,16 @@ export default function Home() {
     setResponse('A pensar...');
 
     try {
-      const apiKey = process.env.NEXT_PUBLIC_AI_API_KEY;
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: input }] }]
-          })
-        }
-      );
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input })
+      });
 
       const data = await res.json();
-      const text =
-        data.candidates?.[0]?.content?.parts?.[0]?.text ||
-        'Não foi possível obter uma resposta.';
-      setResponse(text);
+      setResponse(data.text || data.error || 'Sem resposta.');
     } catch (err) {
-      setResponse('Erro ao ligar à Inteligência Artificial.');
+      setResponse('Erro ao ligar ao servidor.');
     } finally {
       setLoading(false);
     }
@@ -90,4 +81,4 @@ export default function Home() {
       )}
     </main>
   );
-}
+            }
